@@ -121,7 +121,7 @@ fn load(path: &Path, strategy: Strategy) -> Vec<Round> {
     let input = fs::read_to_string(path).expect("file not found");
     let mut rounds: Vec<Round> = vec![];
     for line in input.lines() {
-        let parts: Vec<&str> = line.split(" ").map(|p| p.trim()).collect();
+        let parts: Vec<&str> = line.split(' ').map(|p| p.trim()).collect();
         let round = match strategy {
             Strategy::Original => Round::from_original_strategy(
                 Hand::from_encrypted_strategy(parts[1]),

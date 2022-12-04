@@ -6,8 +6,8 @@ struct Item(char);
 impl Item {
     fn get_priority(&self) -> u8 {
         match self.0 {
-            'a'..='z' => (self.0 as u8) - ('a' as u8) + 1,
-            'A'..='Z' => (self.0 as u8) - ('A' as u8) + 27,
+            'a'..='z' => (self.0 as u8) - b'a' + 1,
+            'A'..='Z' => (self.0 as u8) - b'A' + 27,
             _ => {
                 panic!("unexpected item: {}", self.0);
             }
@@ -64,19 +64,16 @@ pub fn star_2() -> u32 {
     backpacks.chunks_exact(3).fold(0, |mut accum, group| {
         if let [elf_1, elf_2, elf_3] = group {
             let mut all_items = HashSet::new();
-            all_items.extend(('a'..='z').map(|c| Item(c)));
-            all_items.extend(('A'..='Z').map(|c| Item(c)));
+            all_items.extend(('a'..='z').map(Item));
+            all_items.extend(('A'..='Z').map(Item));
             all_items = all_items
-                .intersection(&elf_1.0.union(&elf_1.1).map(|item| *item).collect())
-                .map(|item| *item)
+                .intersection(&elf_1.0.union(&elf_1.1).copied().collect()).copied()
                 .collect();
             all_items = all_items
-                .intersection(&elf_2.0.union(&elf_2.1).map(|item| *item).collect())
-                .map(|item| *item)
+                .intersection(&elf_2.0.union(&elf_2.1).copied().collect()).copied()
                 .collect();
             all_items = all_items
-                .intersection(&elf_3.0.union(&elf_3.1).map(|item| *item).collect())
-                .map(|item| *item)
+                .intersection(&elf_3.0.union(&elf_3.1).copied().collect()).copied()
                 .collect();
             assert_eq!(
                 all_items.len(),

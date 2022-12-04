@@ -57,7 +57,7 @@ fn max(elves: &[Elf]) -> (usize, &Elf) {
                 max_idx = idx;
                 max = Some(elf);
             }
-        } else if let None = max {
+        } else if max.is_none() {
             max_idx = idx;
             max = Some(elf);
         }
