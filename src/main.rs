@@ -3,7 +3,8 @@ mod dec02;
 mod dec03;
 mod dec04;
 mod dec05;
+mod dec06;
 
 fn main() {
-    println!("{}", dec05::star_2());
+    println!("{:?}", dec06::star_2());
 }
