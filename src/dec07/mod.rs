@@ -48,16 +48,7 @@ fn load(path: &Path) -> HashMap<String, u64> {
 #[allow(dead_code)]
 pub fn star_1() -> u64 {
     let dirs = load(Path::new("src/dec07/testdata.txt"));
-    dirs.iter().fold(
-        0,
-        |acc, (_, size)| {
-            if *size <= 100_000 {
-                acc + size
-            } else {
-                acc
-            }
-        },
-    )
+    dirs.iter().filter(|(_, size)| **size <= 100_000).map(|(_, size)| size).sum()
 }
 
 #[allow(dead_code)]
