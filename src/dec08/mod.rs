@@ -45,60 +45,29 @@ pub fn star_1() -> usize {
         Direction::Left,
         Direction::Right,
     ] {
-        let mut row = match direction {
-            Direction::Left | Direction::Down | Direction::Right => 0,
-            Direction::Up => grid.rows - 1,
-        };
-        let mut col = match direction {
-            Direction::Left | Direction::Up | Direction::Down => 0,
-            Direction::Right => grid.cols - 1,
-        };
         let mut height = 0;
-        for _ in 0..grid.rows * grid.cols {
-            let tree = grid.data[row][col];
-            if tree > height || row == 0 || col == 0 || row == grid.rows - 1 || col == grid.cols - 1
-            {
-                visible.insert((row, col));
-            }
-            height = tree.max(height);
-            match direction {
-                Direction::Up => {
-                    if row == 0 {
-                        row = grid.rows - 1;
-                        col += 1;
-                        height = 0;
-                    } else {
-                        row -= 1;
-                    }
-                }
-                Direction::Down => {
-                    if row == grid.rows - 1 {
-                        row = 0;
-                        col += 1;
-                        height = 0;
-                    } else {
-                        row += 1;
-                    }
-                }
-                Direction::Left => {
-                    if col == grid.cols - 1 {
-                        row += 1;
-                        col = 0;
-                        height = 0;
-                    } else {
-                        col += 1;
-                    }
-                }
-                Direction::Right => {
-                    if col == 0 {
-                        row += 1;
-                        col = grid.cols - 1;
-                        height = 0;
-                    } else {
-                        col -= 1;
-                    }
-                }
+        for n in 0..grid.rows * grid.cols {
+            let row = match direction {
+                Direction::Left | Direction::Right => n / grid.cols,
+                Direction::Up => grid.rows - 1 - n % grid.rows,
+                Direction::Down => n % grid.rows,
             };
+            let col = match direction {
+                Direction::Left => n % grid.cols,
+                Direction::Right => grid.cols - 1 - n % grid.cols,
+                Direction::Up | Direction::Down => n / grid.rows,
+            };
+            let reset = match direction {
+                Direction::Left => col == 0,
+                Direction::Right => col == grid.cols - 1,
+                Direction::Up => row == grid.rows - 1,
+                Direction::Down => row == 0,
+            };
+            let tree = grid.data[row][col];
+            if tree > height || reset {
+                visible.insert((row, col));
+                height = tree;
+            }
         }
     }
     visible.len()
@@ -119,46 +88,26 @@ pub fn star_2() -> u64 {
                 let (mut x, mut y) = (row, col);
                 let height = grid.data[row][col];
                 let mut score = 0;
-                match direction {
-                    Direction::Up => {
-                        while x > 0 {
-                            x -= 1;
-                            score += 1;
-                            let tree = grid.data[x][y];
-                            if tree >= height {
-                                break;
-                            }
-                        }
+                loop {
+                    let reached_edge = match direction {
+                        Direction::Up => x == 0,
+                        Direction::Down => x == grid.rows - 1,
+                        Direction::Left => y == grid.cols - 1,
+                        Direction::Right => y == 0,
+                    };
+                    if reached_edge {
+                        break;
                     }
-                    Direction::Down => {
-                        while x < grid.rows - 1 {
-                            x += 1;
-                            score += 1;
-                            let tree = grid.data[x][y];
-                            if tree >= height {
-                                break;
-                            }
-                        }
+                    match direction {
+                        Direction::Up => x -= 1,
+                        Direction::Down => x += 1,
+                        Direction::Left => y += 1,
+                        Direction::Right => y -= 1,
                     }
-                    Direction::Left => {
-                        while y < grid.cols - 1 {
-                            y += 1;
-                            score += 1;
-                            let tree = grid.data[x][y];
-                            if tree >= height {
-                                break;
-                            }
-                        }
-                    }
-                    Direction::Right => {
-                        while y > 0 {
-                            y -= 1;
-                            score += 1;
-                            let tree = grid.data[x][y];
-                            if tree >= height {
-                                break;
-                            }
-                        }
+                    score += 1;
+                    let tree = grid.data[x][y];
+                    if tree >= height {
+                        break;
                     }
                 }
                 scores.entry((row, col)).or_insert(1).mul_assign(score);
