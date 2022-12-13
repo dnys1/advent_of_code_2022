@@ -10,7 +10,8 @@ mod dec09;
 mod dec10;
 mod dec11;
 mod dec12;
+mod dec13;
 
 fn main() {
-    println!("{:?}", dec12::star_2());
+    println!("{:?}", dec13::star_2());
 }
