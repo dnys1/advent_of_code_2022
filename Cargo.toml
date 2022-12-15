@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 derive_builder = "0.12.0"
+range_union_find = "0.4.3"
 regex = "1.7.0"
 serde_json = "1.0.89"
